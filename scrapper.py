@@ -1,11 +1,12 @@
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from creds import USERNAME, PASSWORD
-from settings import URL, PHRASES
+from settings import URL, PHRASES, CHROME_BINARY
 from logger import Logger
 import time
 
@@ -13,7 +14,13 @@ class Scrapper:
     def __init__(self):
         self.logger = Logger()
         self.logger.log("New instance of Scrapper created")
-        driver = webdriver.Chrome("./chromedriver.exe")
+        if not CHROME_BINARY:
+            chrome_options = Options()
+            prefs = {"download.default_directory" : CHROME_BINARY}
+            chrome_options.add_experimental_option("prefs",prefs)
+            driver = webdriver.Chrome(executable_path="./chromedriver.exe", chrome_options=chrome_options)
+        else:
+            driver = webdriver.Chrome("./chromedriver.exe")
         driver.get(URL)
         self.browser = driver
         self.login_and_open_table()

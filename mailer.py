@@ -14,7 +14,7 @@ class Mailer:
     def send_message(self, message):
         msg = EmailMessage()
         msg['From'] = EMAIL_USERNAME
-        msg['To']  = TARET_EMAIL
+        msg['To']  = TARGET_EMAIL
         msg['Subject']  = "Shift Found!"
         msg.set_content(message)
 
