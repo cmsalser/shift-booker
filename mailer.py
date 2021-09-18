@@ -1,4 +1,4 @@
-from settings import TARET_EMAIL
+from settings import TARGET_EMAIL
 from creds import EMAIL_PASSWORD, EMAIL_USERNAME
 from logger import Logger
 from email.message import EmailMessage
