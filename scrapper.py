@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver.chrome import options
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
@@ -17,10 +18,9 @@ class Scrapper:
         if not CHROME_BINARY:
             driver = webdriver.Chrome("./chromedriver.exe")
         else:
-            chrome_options = Options()
-            prefs = {"download.default_directory" : CHROME_BINARY}
-            chrome_options.add_experimental_option("prefs",prefs)
-            driver = webdriver.Chrome(executable_path="./chromedriver.exe", chrome_options=chrome_options)
+            options = Options()
+            options.binary_location = CHROME_BINARY
+            driver = webdriver.Chrome(chrome_options=options, executable_path="./chromedriver.exe")
         driver.get(URL)
         self.browser = driver
         self.login_and_open_table()
