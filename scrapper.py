@@ -15,12 +15,12 @@ class Scrapper:
         self.logger = Logger()
         self.logger.log("New instance of Scrapper created")
         if not CHROME_BINARY:
+            driver = webdriver.Chrome("./chromedriver.exe")
+        else:
             chrome_options = Options()
             prefs = {"download.default_directory" : CHROME_BINARY}
             chrome_options.add_experimental_option("prefs",prefs)
             driver = webdriver.Chrome(executable_path="./chromedriver.exe", chrome_options=chrome_options)
-        else:
-            driver = webdriver.Chrome("./chromedriver.exe")
         driver.get(URL)
         self.browser = driver
         self.login_and_open_table()
