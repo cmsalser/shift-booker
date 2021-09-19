@@ -4,6 +4,10 @@ from logger import Logger
 from email.message import EmailMessage
 import smtplib
 
+def format_tuple(tuple):
+    message = '===========\nDay: {0[0]}\nDate: {0[1]}\nTime: {0[2]}\nUnit: {0[3]}\nGrade: {0[4]}\n==========='.format(tuple)
+    return message
+
 class Mailer:
 
     def __init__(self):
@@ -16,7 +20,8 @@ class Mailer:
         msg['From'] = EMAIL_USERNAME
         msg['To']  = TARGET_EMAIL
         msg['Subject']  = "Shift Found!"
-        msg.set_content(message)
+        pretty_message = format_tuple(message)
+        msg.set_content(pretty_message)
 
         try:
             server = smtplib.SMTP(self.smtp, self.port)

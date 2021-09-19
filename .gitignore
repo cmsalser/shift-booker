@@ -1,6 +1,8 @@
 *.log
+*.db
 logs/
 __pycache__/
 env/
 creds.py
 settings.py
+chromedriver.exe

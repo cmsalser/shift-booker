@@ -15,12 +15,13 @@ class Scrapper:
     def __init__(self):
         self.logger = Logger()
         self.logger.log("New instance of Scrapper created")
-        if not CHROME_BINARY:
-            driver = webdriver.Chrome("./chromedriver.exe")
-        else:
-            options = Options()
+
+        options = Options()
+        options.add_argument("--headless")
+        if CHROME_BINARY:
             options.binary_location = CHROME_BINARY
-            driver = webdriver.Chrome(chrome_options=options, executable_path="./chromedriver.exe")
+        driver = webdriver.Chrome(chrome_options=options, executable_path="./chromedriver.exe")
+
         driver.get(URL)
         self.browser = driver
         self.login_and_open_table()
@@ -38,20 +39,24 @@ class Scrapper:
         shifts = []
         next_btn = self.browser.find_element_by_id("btnNext")
         is_active = not("disabled" in next_btn.get_attribute("class"))
+        
+        index = 0
         while True:
+            time.sleep(3)
+            index += 1
             try:
-                rows = WebDriverWait(self.browser, 20).until(EC.presence_of_all_elements_located((By.XPATH, "//*[@id=\"grid\"]/tbody/tr")))         
+                rows = WebDriverWait(self.browser, 10).until(EC.presence_of_all_elements_located((By.XPATH, "//*[@id=\"grid\"]/tbody/tr")))         
                 for row in rows:
                     shift = self.read_row(row)
-                    if shift != "n/a":
+                    if len(shift) > 0:
                         shifts.append(shift)
+                        self.logger.log("1 hits found on page: " + str(index))
             except TimeoutException:
-                self.logger.log("No rows found on table page")
+                self.logger.log("No rows found for table on page: " + str(index))
             if is_active:
                 next_btn.click()
                 next_btn = self.browser.find_element_by_id("btnNext")
                 is_active = not("disabled" in next_btn.get_attribute("class"))
-                time.sleep(3)
             else:
                 self.logger.log("Reached end of table")
                 break
@@ -60,17 +65,15 @@ class Scrapper:
 
     def read_row(self, row):
         day = row.find_element_by_xpath("./td[2]").text
+        date = row.find_element_by_xpath("./td[3]").text
+        time = row.find_element_by_xpath("./td[4]").text
+        unit = row.find_element_by_xpath("./td[7]").text
         grade = row.find_element_by_xpath("./td[11]").text
+        
         if (day in PHRASES) and (grade in PHRASES):
-            message = ("Day: " + day + "\n"
-                        "Date: " + row.find_element_by_xpath("./td[3]").text + "\n"
-                        "Time: " + row.find_element_by_xpath("./td[4]").text + "\n"
-                        "Unit: " + row.find_element_by_xpath("./td[7]").text + "\n"
-                        "Grade: " + grade + "\n")
-            self.logger.log("Shift found:")
-            self.logger.log(message)
-            return message
-        return "n/a"
+            shift_tuple = (day, date, time, unit, grade)
+            return shift_tuple
+        return ()
             # row.find_element_by_xpath("./td[16]").click()
             # try:
             #     confirm_button =  WebDriverWait(self.browser, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "ui-button-text")))
