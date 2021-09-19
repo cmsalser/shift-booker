@@ -6,7 +6,7 @@ import time
 
 class App():
     def __init__(self):
-        self.logger = Logger("Main")
+        self.logger = Logger()
         self.db = DB()
         self.mailer = Mailer()
 
@@ -22,7 +22,7 @@ class App():
                     if not exists:
                         self.mailer.send_message(shift)
             scrapper.close()
-            time.sleep(30)
+            time.sleep(600)
 
 if __name__ == "__main__":
     app = App()

@@ -13,14 +13,15 @@ import time
 
 class Scrapper:
     def __init__(self):
-        self.logger = Logger("Scrapper")
+        self.logger = Logger()
         self.logger.log("New instance of Scrapper created")
-        if not CHROME_BINARY:
-            driver = webdriver.Chrome("./chromedriver.exe")
-        else:
-            options = Options()
+
+        options = Options()
+        options.add_argument("--headless")
+        if CHROME_BINARY:
             options.binary_location = CHROME_BINARY
-            driver = webdriver.Chrome(chrome_options=options, executable_path="./chromedriver.exe")
+        driver = webdriver.Chrome(chrome_options=options, executable_path="./chromedriver.exe")
+
         driver.get(URL)
         self.browser = driver
         self.login_and_open_table()
@@ -38,6 +39,7 @@ class Scrapper:
         shifts = []
         next_btn = self.browser.find_element_by_id("btnNext")
         is_active = not("disabled" in next_btn.get_attribute("class"))
+        
         index = 0
         while True:
             time.sleep(3)

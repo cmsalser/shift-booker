@@ -13,7 +13,7 @@ class Mailer:
     def __init__(self):
         self.port = 587
         self.smtp = "smtp.gmail.com"
-        self.logger = Logger("Mailer")
+        self.logger = Logger()
     
     def send_message(self, message):
         msg = EmailMessage()

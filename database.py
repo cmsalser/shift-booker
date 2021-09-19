@@ -13,7 +13,7 @@ def convert(data):
 
 class DB:
     def __init__(self):
-        self.logger = Logger("DB")
+        self.logger = Logger()
         self.db = sqlite3.connect('shifts.db')
         self.cur = self.db.cursor()
         self.cur.execute('''
